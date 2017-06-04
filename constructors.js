@@ -10,6 +10,11 @@
  * @property {string} description
  * @method   getDetails
  */
+ function Spell(name, cost, description) {
+  this.name =  name;
+  this.cost = cost;
+  this.description = description;
+
 
   /**
    * Returns a string of all of the spell's details.
@@ -18,6 +23,11 @@
    * @name getDetails
    * @return {string} details containing all of the spells information.
    */
+   this.getDetails = function() {
+    return "spell name: " + name + "cost: " + cost + "description " + description;
+   }
+ };
+
 
 /**
  * A spell that deals damage.
@@ -43,6 +53,14 @@
  * @property {number} damage
  * @property {string} description
  */
+function DamageSpell(name, cost, damage, description){
+  Spell.call(this, name, cost, description);
+  this.damage = damage;
+}
+
+DamageSpell.prototype = Object.create(Spell.prototype,{
+  constructor : DamageSpell
+});
 
 /**
  * Now that you've created some spells, let's create
@@ -60,6 +78,12 @@
  * @method  spendMana
  * @method  invoke
  */
+ function Spellcaster(name, health, mana, isAlive) {
+   this.name = name;
+   this.health = health;
+   this.mana = mana;
+   this.isAlive = true;
+ };
 
   /**
    * @method inflictDamage
@@ -71,6 +95,16 @@
    *
    * @param  {number} damage  Amount of damage to deal to the spellcaster
    */
+  Spellcaster.prototype.inflictDamage = function(damage) {
+    if(this.health >= damage) {
+      this.health -= damage;
+    } else {
+      this.health = 0;
+      }
+    if(this.health === 0 ) {
+      this.isAlive = false;
+    }
+  };
 
   /**
    * @method spendMana
@@ -81,6 +115,14 @@
    * @param  {number} cost      The amount of mana to spend.
    * @return {boolean} success  Whether mana was successfully spent.
    */
+  Spellcaster.prototype.spendMana = function(cost) {
+    if(this.mana - cost >= 0) {
+      this.mana -= cost;
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   /**
    * @method invoke
@@ -95,7 +137,7 @@
    * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof
    *
    * Next check if the spellcaster has enough mana to cast the spell.
-   * If it can cast a spell, it should lose mana  equal to the spell's cost.
+   * If it can cast a spell, it should lose mana equal to the spell's cost.
    * If there is not enough mana, return `false`.
    *
    * If there is enough mana to cast the spell, return `true`.
@@ -108,3 +150,16 @@
    * @param  {Spellcaster} target         The spell target to be inflicted.
    * @return {boolean}                    Whether the spell was successfully cast.
    */
+   Spellcaster.prototype.invoke = function(spell, target) {
+    if(spell != Spell) {
+      return false;
+
+    }
+
+   };
+
+
+
+
+
+
